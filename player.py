@@ -38,10 +38,10 @@ class Player(pygame.sprite.Sprite):
         
         if keys[pygame.K_SPACE]:
             # Lógica para saltar
-            if self.on_ground() or self.is_on_ground: 
+            if self.on_floor() or self.is_on_ground: 
                 self.vel_y = self.jump_speed
 
-    def on_ground(self):
+    def on_floor(self):
         # Retornar True si está tocando el suelo
 
         if self.rect.bottom >= 375:
@@ -96,23 +96,27 @@ class Player(pygame.sprite.Sprite):
         # Coliciones horizontales
         collided_platforms = pygame.sprite.spritecollide(self, platforms_group, False)
         for platform in collided_platforms:
-            if self.vel_x > 0 and not self.on_ground():  # yendo a la derecha
+            if self.vel_x > 0 and not self.on_floor():  # yendo a la derecha
                 self.rect.right = platform.rect.left
-            elif self.vel_x < 0 and not self.on_ground():  # yendo a la izquierda
+            elif self.vel_x < 0 and not self.on_floor():  # yendo a la izquierda
                 self.rect.left = platform.rect.right
 
         # Verificar si el jugador se "cayo" del escenario
         if self.rect.top > 400:
             self.lives -= 1
-            print(f"Perdiste una vida. Te quedan {self.lives} vidas.")
             # Si aún hay vidas, reubicar al jugador en (spawn_x, spawn_y)
             if self.lives > 0:
                 self.rect.topleft = (self.spawn_x, self.spawn_y)
                 self.vel_y = 0
             else:
                 # Manejar game over, por ejemplo
-                print("Game Over!")
-                # Podrías reiniciar vidas, enviar a pantalla de game over, etc.
+                return True
+        #Jugador se quedo sin vidas
+        if self.lives <=0:
+            return True
+        
+        # False == Playing
+        return False
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):

@@ -1,7 +1,8 @@
 import pygame
 import sys
-from player import Player
-from player import Platform
+from player import *
+from enemies import *
+from levels import *
 
 #Game_name
 
@@ -13,35 +14,29 @@ wigth, heigth = 800, 400
 screen = pygame.display.set_mode((wigth, heigth))
 pygame.display.set_caption("Game_name")
 
-clock = pygame.time.Clock()
-
-
 # Definicion de reloj para controlar FPS
 clock = pygame.time.Clock()
 
-# Definicion de plataformas
-platforms_group = pygame.sprite.Group()
+# Fuente para dibujar texto (vidas, menús, etc.)
+font = pygame.font.SysFont(None, 36)
 
-floor = Platform(25, heigth - 25, wigth-50, 25)      # Piso que ocupa todo el ancho
-platform1 = Platform(350, 180, 100, 10)          # Plataforma en (200,300)
-platform2 = Platform(120, 280, 100, 10)
-platform3 = Platform(600, 280, 100, 10)
+# Definicion de grupos
+platforms_group = None
+all_sprites = None
+enemies_group = None
 
-# 3) Agregar las plataformas al grupo
-platforms_group.add(floor)
-platforms_group.add(platform1, platform2, platform3)
+# Definicion de nivel
+nivel = level1()
 
+player, platforms_group, enemies_group, all_sprites = level1()
 
+# Estado inicial del juego
+state_menu = "menu"
+state_playing = "playing"
+state_game_over = "game_over"
 
-# Iinicializacion de jugador
-player = Player(100, 100)
-
-all_sprites = pygame.sprite.Group()
-
-all_sprites.add(player)
-all_sprites.add(floor)
-all_sprites.add(floor, platform1, platform2, platform3)
-
+game_state = state_menu
+game_over_flag = False
 # Loop principal
 running = True
 while running:
@@ -53,16 +48,50 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    # Manejo  para cambiar de estado con teclas:
+        if game_state == state_menu:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                # Con Esc pasamos a jugar
+                game_state = state_playing
 
+        elif game_state == state_game_over:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                # Reiniciar todo
+                player, platforms_group, enemies_group, all_sprites = level1()
+                player.lives = 3
+                player.rect.topleft = (player.spawn_x, player.spawn_y)
+                game_state = state_menu
+                game_over_flag = False
 
-    # Lógica del juego (movimientos, colisiones, etc.)
-    player.update(platforms_group)
-     
+    if game_state==state_playing:
+        game_over_flag = player.update(platforms_group)
+        enemies_group.update()
+        collisions = pygame.sprite.spritecollide(player, enemies_group, False)
+
+        for enemy in collisions:
+            enemy.on_collision(player)
+
+    if game_over_flag:
+        game_state = state_game_over
+
     # Dibujado
     screen.fill((0, 0, 0))          # Fondo negro
-    all_sprites.draw(screen)        # Dibujamos jugador y plataformas
-    pygame.display.flip()
     
+    if game_state == state_menu:
+            # Dibujamos un menú sencillo
+            draw_text(screen, "MENU PRINCIPAL", 300, 150, font, (255, 255, 255))
+            draw_text(screen, "Pulsa Esc para JUGAR", 280, 200, font, (255, 255, 255))
+
+    elif game_state == state_playing:
+        # Dibujamos el escenario
+        all_sprites.draw(screen)
+        # Dibujar las vidas en la esquina
+        draw_text(screen, f"Vidas: {player.lives}", 10, 10, font, (255, 255, 255))
+
+    elif game_state == state_game_over:
+        draw_text(screen, "GAME OVER", 330, 150, font, (255, 0, 0))
+        draw_text(screen, "Pulsa Esc para volver al MENU", 240, 200, font, (255, 255, 255))
+
     # Actualizamos la ventana
     pygame.display.flip()
 
