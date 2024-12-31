@@ -29,7 +29,6 @@
 - **Lenguaje de Programación:** Python (versión 3.8 o superior recomendada).  
 - **Librerías / Frameworks:**  
   - [Pygame](https://www.pygame.org/news) (Para la parte gráfica y de eventos).  
-- **Sistema Operativo:** Probado en Windows y Linux. En macOS también debería funcionar, pero no ha sido probado exhaustivamente.
 
 *Asegúrate de instalar todas las dependencias necesarias antes de ejecutar el proyecto.*
 
@@ -38,8 +37,7 @@
 ## Controles
 
 - **Flecha Izquierda / Derecha**: Mover al personaje horizontalmente.  
-- **Flecha Arriba** (o **Barra Espaciadora**): Saltar.  
-- **Flecha Abajo**: Agacharse (si existe esa mecánica).  
+- **Barra Espaciadora**: Saltar.  
 - **Teclas numéricas (1, 2 o 3)**: Seleccionar nivel (si está habilitado en el menú).  
 - **Esc**: Regresar al menú o salir, dependiendo de la pantalla.
 
@@ -50,7 +48,7 @@
 1. **Menú Principal**: Al iniciar, verás un fondo o interfaz sencilla que te permite elegir el nivel a jugar (usando las teclas 1, 2 o 3, por ejemplo).  
 2. **Selección de Nivel**: Escoge el nivel deseado y automáticamente se cargará la escena correspondiente (plataformas, enemigos, etc.).  
 3. **Acción**: Muévete con las flechas del teclado. Salta sobre los enemigos para derrotarlos. Evita caer al vacío, ya que perderás vidas.  
-4. **Game Over**: Si te quedas sin vidas, aparecerá una pantalla de fin de juego. Presiona la tecla indicada (por ejemplo, Esc) para volver al menú principal y reintentar.
+4. **Game Over**: Si te quedas sin vidas, aparecerá una pantalla de fin de juego. Presiona la Esc para volver al menú principal y reintentar.
 
 ---
 
@@ -69,7 +67,7 @@ Esto facilita enormemente **reiniciar** o **cambiar de nivel** sin reescribir l�
 
 El juego utiliza un **enfoque orientado a objetos** para manejar distintos tipos de enemigos y sus comportamientos:
 - **Enemigo terrestre** (`GroundEnemy`): Se mueve horizontalmente, daña al jugador si colisiona de lado y muere si el jugador le cae encima.  
-- **Enemigo volador** (`FlyingEnemy` o `SkyEnemy`): Se desplaza por el aire siguiendo límites definidos (puede moverse en X e Y).  
+- **Enemigo volador** (`FlyingEnemy`): Se desplaza por el aire siguiendo límites definidos (puede moverse en X e Y).  
 - **Fácil Extensión**: Para añadir un nuevo enemigo con mecánicas distintas (disparo, patrullaje inteligente, etc.), solo necesitas crear una nueva clase que herede de `pygame.sprite.Sprite` e implemente su método `update()` y su lógica de colisión.
 
 ---
