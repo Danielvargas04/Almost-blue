@@ -8,8 +8,10 @@ class Player(pygame.sprite.Sprite):
         #self.rect = self.image.get_rect()
         #self.rect.topleft = (x, y)
 
-        self.image = pygame.Surface((20, 40))
-        self.image.fill((0, 0, 150))  
+        # 1) Carga la imagen original
+        original_image = pygame.image.load("figures/player.png").convert_alpha()
+        scaled_image = pygame.transform.scale(original_image, (35, 40))
+        self.image = scaled_image
         self.rect = self.image.get_rect(topleft=(x, y))
         
         # Vidas y daños
@@ -121,8 +123,10 @@ class Player(pygame.sprite.Sprite):
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         super().__init__()
-        self.image = pygame.Surface((w, h))
-        self.image.fill((0, 50, 0))  
+        # Representación gráfica
+        original_image = pygame.image.load("figures/floor.png").convert_alpha()
+        scaled_image = pygame.transform.scale(original_image, (w, h))
+        self.image = scaled_image
         self.rect = self.image.get_rect(topleft=(x, y))
 
 def draw_text(surface, text, x, y, font, color=(255,255,255)):
